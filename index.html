@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random YouTube Video</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Additional styles can be added here if needed */
+        #videoContainer {
+            width: 100%; /* Ensure full width */
+            height: 0; /* Start with zero height for aspect ratio */
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100%) */
+            position: relative;
+        }
+
+        #videoContainer iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-200 p-4">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow-md">
+        <h1 class="text-2xl font-bold mb-4">Random YouTube Video</h1>
+        <form id="searchForm" class="mb-4">
+            <input id="keywordInput" type="text" placeholder="Enter keyword..." class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500">
+            <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">Random Video</button>
+        </form>
+        <div id="videoContainer">
+            <!-- Embedded video will be inserted here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const form = document.getElementById('searchForm');
+        const keywordInput = document.getElementById('keywordInput');
+        const videoContainer = document.getElementById('videoContainer');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const keyword = keywordInput.value.trim();
+            if (!keyword) return;
+
+            try {
+                const response = await axios.get(`https://randomyoutubeapi.vercel.app/random-youtube?keyword=${encodeURIComponent(keyword)}`);
+                const embedCode = response.data.embedCode;
+                videoContainer.innerHTML = embedCode;
+            } catch (error) {
+                console.error('Error fetching and displaying video:', error);
+            }
+        });
+    </script>
+</body>
+</html>
